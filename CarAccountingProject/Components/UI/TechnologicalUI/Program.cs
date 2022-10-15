@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using DB;
-using BL;
+// using DB;
+// using BL;
 
 
 namespace TechnologicalUI

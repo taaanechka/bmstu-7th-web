@@ -26,16 +26,51 @@ namespace API.Controllers
 
         [Authorize(Roles = "ADMIN, ANALYST")]
 		[HttpGet]
-		public IActionResult Index()
+		// public IActionResult GetComings([FromUri] string date, [FromUri] string dateFrom, [FromUri] string dateTo)
+		public IActionResult GetComings([FromQuery] Dates dates)
 		{
-            List<API.Coming> comingsAPI = new List<API.Coming>();
+			List<API.Coming> comingsAPI = new List<API.Coming>();
 
-			var comingsBL = _facade.GetComings();
-            foreach (var coming in comingsBL)
-            {
-                comingsAPI.Add(ComingConverter.BLToAPI(coming));
-            }
-            
+			List<BL.Coming> comingsBL;
+
+			string date = dates.Date;
+			string dateFrom = dates.DateFrom;
+			string dateTo = dates.DateTo;
+
+			if (String.IsNullOrEmpty(date) && String.IsNullOrEmpty(dateFrom) && String.IsNullOrEmpty(dateTo))
+			{
+				comingsBL = _facade.GetComings();
+			}
+			else if (!String.IsNullOrEmpty(date) && String.IsNullOrEmpty(dateFrom) && String.IsNullOrEmpty(dateTo))
+			{
+				DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
+                                        System.Globalization.CultureInfo.InvariantCulture);
+				Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
+
+				comingsBL = _facade.GetComingsByDate(Date);
+			}
+			else if (String.IsNullOrEmpty(date) && !String.IsNullOrEmpty(dateFrom) && !String.IsNullOrEmpty(dateTo))
+			{
+				DateTime Date1 = DateTime.ParseExact(dateFrom, "yyyy-MM-dd",
+			                                System.Globalization.CultureInfo.InvariantCulture);
+				Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
+
+			    DateTime Date2 = DateTime.ParseExact(dateTo, "yyyy-MM-dd",
+			                                System.Globalization.CultureInfo.InvariantCulture);
+				Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
+
+				comingsBL = _facade.GetComingsBetweenDates(Date1, Date2);
+			}
+			else 
+			{
+				return BadRequest("Invalid data of query");
+			}
+
+			foreach (var coming in comingsBL)
+			{
+				comingsAPI.Add(ComingConverter.BLToAPI(coming));
+			}
+			
 			string jsonString = JsonSerializer.Serialize(comingsAPI, Options.JsonOptions());
 			return new ContentResult
 			{
@@ -106,60 +141,60 @@ namespace API.Controllers
 			}
 		}
 
-        //findByDate
-        [Authorize(Roles = "ADMIN, ANALYST")]
-		[HttpGet("FindByDate")]
-		public IActionResult GetComingsByDate(string date)
-		{
-            DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-			Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
+        // //findByDate
+        // [Authorize(Roles = "ADMIN, ANALYST")]
+		// [HttpGet]
+		// public IActionResult GetComingsByDate(string date)
+		// {
+        //     DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+		// 	Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
 
-			List<API.Coming> comingsAPI = new List<API.Coming>();
+		// 	List<API.Coming> comingsAPI = new List<API.Coming>();
 
-			var comingsBL = _facade.GetComingsByDate(Date);
-            foreach (var coming in comingsBL)
-            {
-                comingsAPI.Add(ComingConverter.BLToAPI(coming));
-            }
+		// 	var comingsBL = _facade.GetComingsByDate(Date);
+        //     foreach (var coming in comingsBL)
+        //     {
+        //         comingsAPI.Add(ComingConverter.BLToAPI(coming));
+        //     }
             
-			string jsonString = JsonSerializer.Serialize(comingsAPI, Options.JsonOptions());
-			return new ContentResult
-			{
-				Content = jsonString,
-				ContentType = "application/json",
-				StatusCode = 200
-			};
-		}
+		// 	string jsonString = JsonSerializer.Serialize(comingsAPI, Options.JsonOptions());
+		// 	return new ContentResult
+		// 	{
+		// 		Content = jsonString,
+		// 		ContentType = "application/json",
+		// 		StatusCode = 200
+		// 	};
+		// }
 
-        //findBetweenDates
-        [Authorize(Roles = "ADMIN, ANALYST")]
-		[HttpGet("FindBetweenDates")]
-		public IActionResult GetComingsBetweenDates(string date1, string date2)
-		{
-            DateTime Date1 = DateTime.ParseExact(date1, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-			Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
+        // //findBetweenDates
+        // [Authorize(Roles = "ADMIN, ANALYST")]
+		// [HttpGet]
+		// public IActionResult GetComingsBetweenDates(string dateFrom, string dateTo)
+		// {
+        //     DateTime Date1 = DateTime.ParseExact(dateFrom, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+		// 	Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
 
-            DateTime Date2 = DateTime.ParseExact(date2, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-			Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
+        //     DateTime Date2 = DateTime.ParseExact(dateTo, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+		// 	Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
 
-			List<API.Coming> comingsAPI = new List<API.Coming>();
+		// 	List<API.Coming> comingsAPI = new List<API.Coming>();
 
-			var comingsBL = _facade.GetComingsBetweenDates(Date1, Date2);
-            foreach (var coming in comingsBL)
-            {
-                comingsAPI.Add(ComingConverter.BLToAPI(coming));
-            }
+		// 	var comingsBL = _facade.GetComingsBetweenDates(Date1, Date2);
+        //     foreach (var coming in comingsBL)
+        //     {
+        //         comingsAPI.Add(ComingConverter.BLToAPI(coming));
+        //     }
             
-			string jsonString = JsonSerializer.Serialize(comingsAPI, Options.JsonOptions());
-			return new ContentResult
-			{
-				Content = jsonString,
-				ContentType = "application/json",
-				StatusCode = 200
-			};
-		}
+		// 	string jsonString = JsonSerializer.Serialize(comingsAPI, Options.JsonOptions());
+		// 	return new ContentResult
+		// 	{
+		// 		Content = jsonString,
+		// 		ContentType = "application/json",
+		// 		StatusCode = 200
+		// 	};
+		// }
     }
 }

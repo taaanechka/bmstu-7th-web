@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DB\DB.csproj" />
-    <ProjectReference Include="..\..\BL\BL.csproj" />
+    <ProjectReference Include="..\..\Components\DB\DB.csproj" />
+    <ProjectReference Include="..\..\Components\BL\BL.csproj" />
   </ItemGroup>
 
 </Project>

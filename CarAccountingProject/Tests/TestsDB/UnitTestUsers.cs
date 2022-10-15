@@ -113,29 +113,31 @@ public class UnitTestUsers: IDisposable
         Assert.Equal((BL.Permissions) 1, userNew.UserType);
     }
 
+    // [Fact]
+    // public void TestUpdateUserUncorrect()
+    // {
+    //     BL.User userUpd = new BL.User(3, "SomeName", "Surname3", "NewLogin", "Password3", (BL.Permissions) 4);
+
+    //     // Assert
+    //     Assert.Throws<DB.UsersValidatorFailException>(()=> Rep.UpdateUser(3, userUpd));
+    // }
+
+    // [Fact]
+    // public void TestDeleteUserCorrect()
+    // {
+    //     // Act
+    //     Rep.BlockUser(3);
+
+    //     UsersDbSetMock.Verify(m => m.Remove(It.IsAny<DB.User>()), Times.Once());
+    //     dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
+
+    //     // Assert
+    //     // Assert.Equal(2, dbContextMock.Object.Users.Count());
+    //     Assert.Equal(1, dbContextMock.Object.Users.Where(u => u.UserType.Equals(0)).Count());
+    // }
+
     [Fact]
-    public void TestUpdateUserUncorrect()
-    {
-        BL.User userUpd = new BL.User(3, "SomeName", "Surname3", "NewLogin", "Password3", (BL.Permissions) 4);
-
-        // Assert
-        Assert.Throws<DB.UsersValidatorFailException>(()=> Rep.UpdateUser(3, userUpd));
-    }
-
-    [Fact]
-    public void TestBlockUserCorrect()
-    {
-        // Act
-        Rep.BlockUser(3);
-
-        UsersDbSetMock.Verify(m => m.Remove(It.IsAny<DB.User>()), Times.Once());
-        dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
-
-        Assert.Equal(2, dbContextMock.Object.Users.Count());
-    }
-
-    [Fact]
-    public void TestBlockUserUncorrect()
+    public void TestDeleteUserUncorrect()
     {
         // Assert
         Assert.Throws<DB.UserNotFoundException>(()=> Rep.BlockUser(5));

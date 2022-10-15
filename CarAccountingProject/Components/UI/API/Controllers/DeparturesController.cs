@@ -26,16 +26,50 @@ namespace API.Controllers
 
         [Authorize(Roles = "ADMIN, ANALYST")]
 		[HttpGet]
-		public IActionResult Index()
+		public IActionResult GetDepartures([FromQuery] Dates dates)
 		{
-            List<API.Departure> departuresAPI = new List<API.Departure>();
+			List<API.Departure> departuresAPI = new List<API.Departure>();
 
-			var departuresBL = _facade.GetDepartures();
-            foreach (var departure in departuresBL)
-            {
-                departuresAPI.Add(DepartureConverter.BLToAPI(departure));
-            }
-            
+			List<BL.Departure> departuresBL;
+
+			string date = dates.Date;
+			string dateFrom = dates.DateFrom;
+			string dateTo = dates.DateTo;
+
+			if (String.IsNullOrEmpty(date) && String.IsNullOrEmpty(dateFrom) && String.IsNullOrEmpty(dateTo))
+			{
+				departuresBL = _facade.GetDepartures();
+			}
+			else if (!String.IsNullOrEmpty(date) && String.IsNullOrEmpty(dateFrom) && String.IsNullOrEmpty(dateTo))
+			{
+				DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
+                                        System.Globalization.CultureInfo.InvariantCulture);
+				Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
+
+				departuresBL = _facade.GetDeparturesByDate(Date);
+			}
+			else if (String.IsNullOrEmpty(date) && !String.IsNullOrEmpty(dateFrom) && !String.IsNullOrEmpty(dateTo))
+			{
+				DateTime Date1 = DateTime.ParseExact(dateFrom, "yyyy-MM-dd",
+			                                System.Globalization.CultureInfo.InvariantCulture);
+				Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
+
+			    DateTime Date2 = DateTime.ParseExact(dateTo, "yyyy-MM-dd",
+			                                System.Globalization.CultureInfo.InvariantCulture);
+				Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
+
+				departuresBL = _facade.GetDeparturesBetweenDates(Date1, Date2);
+			}
+			else 
+			{
+				return BadRequest("Invalid data of query");
+			}
+
+			foreach (var departure in departuresBL)
+			{
+				departuresAPI.Add(DepartureConverter.BLToAPI(departure));
+			}
+			
 			string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
 			return new ContentResult
 			{
@@ -44,6 +78,25 @@ namespace API.Controllers
 				StatusCode = 200
 			};
 		}
+
+		// public IActionResult Index()
+		// {
+        //     List<API.Departure> departuresAPI = new List<API.Departure>();
+
+		// 	var departuresBL = _facade.GetDepartures();
+        //     foreach (var departure in departuresBL)
+        //     {
+        //         departuresAPI.Add(DepartureConverter.BLToAPI(departure));
+        //     }
+            
+		// 	string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
+		// 	return new ContentResult
+		// 	{
+		// 		Content = jsonString,
+		// 		ContentType = "application/json",
+		// 		StatusCode = 200
+		// 	};
+		// }
 
         // [Authorize(Roles = "ADMIN")]
 		[Authorize]
@@ -68,7 +121,7 @@ namespace API.Controllers
 			}
 		}
 
-        //addComing
+        //addDeparture
         [Authorize(Roles = "EMPLOYEE")]
 		[HttpPost]
 		public IActionResult AddDeparture([FromBody] API.LinkOwnerCarDeparture link)
@@ -99,60 +152,60 @@ namespace API.Controllers
 			}
 		}
 
-        //findByDate
-        [Authorize(Roles = "ADMIN, ANALYST")]
-		[HttpGet("FindByDate")]
-		public IActionResult GetDeparturesByDate(string date)
-		{
-            DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-            Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
+        // //findByDate
+        // [Authorize(Roles = "ADMIN, ANALYST")]
+		// [HttpGet]
+		// public IActionResult GetDeparturesByDate(string date)
+		// {
+        //     DateTime Date = DateTime.ParseExact(date, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+        //     Date = DateTime.SpecifyKind(Date, DateTimeKind.Utc);
 
-			List<API.Departure> departuresAPI = new List<API.Departure>();
+		// 	List<API.Departure> departuresAPI = new List<API.Departure>();
 
-			var departuresBL = _facade.GetDeparturesByDate(Date);
-            foreach (var departure in departuresBL)
-            {
-                departuresAPI.Add(DepartureConverter.BLToAPI(departure));
-            }
+		// 	var departuresBL = _facade.GetDeparturesByDate(Date);
+        //     foreach (var departure in departuresBL)
+        //     {
+        //         departuresAPI.Add(DepartureConverter.BLToAPI(departure));
+        //     }
             
-			string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
-			return new ContentResult
-			{
-				Content = jsonString,
-				ContentType = "application/json",
-				StatusCode = 200
-			};
-		}
+		// 	string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
+		// 	return new ContentResult
+		// 	{
+		// 		Content = jsonString,
+		// 		ContentType = "application/json",
+		// 		StatusCode = 200
+		// 	};
+		// }
 
-        //findBetweenDates
-        [Authorize(Roles = "ADMIN, ANALYST")]
-		[HttpGet("FindBetweenDates")]
-		public IActionResult GetDeparturesBetweenDates(string date1, string date2)
-		{
-            DateTime Date1 = DateTime.ParseExact(date1, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-            Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
+        // //findBetweenDates
+        // [Authorize(Roles = "ADMIN, ANALYST")]
+		// [HttpGet]
+		// public IActionResult GetDeparturesBetweenDates(string dateFrom, string dateTo)
+		// {
+        //     DateTime Date1 = DateTime.ParseExact(dateFrom, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+        //     Date1 = DateTime.SpecifyKind(Date1, DateTimeKind.Utc);
 
-            DateTime Date2 = DateTime.ParseExact(date2, "yyyy-MM-dd",
-                                        System.Globalization.CultureInfo.InvariantCulture);
-            Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
+        //     DateTime Date2 = DateTime.ParseExact(dateTo, "yyyy-MM-dd",
+        //                                 System.Globalization.CultureInfo.InvariantCulture);
+        //     Date2 = DateTime.SpecifyKind(Date2, DateTimeKind.Utc);
 
-			List<API.Departure> departuresAPI = new List<API.Departure>();
+		// 	List<API.Departure> departuresAPI = new List<API.Departure>();
 
-			var departuresBL = _facade.GetDeparturesBetweenDates(Date1, Date2);
-            foreach (var departure in departuresBL)
-            {
-                departuresAPI.Add(DepartureConverter.BLToAPI(departure));
-            }
+		// 	var departuresBL = _facade.GetDeparturesBetweenDates(Date1, Date2);
+        //     foreach (var departure in departuresBL)
+        //     {
+        //         departuresAPI.Add(DepartureConverter.BLToAPI(departure));
+        //     }
             
-			string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
-			return new ContentResult
-			{
-				Content = jsonString,
-				ContentType = "application/json",
-				StatusCode = 200
-			};
-		}
+		// 	string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
+		// 	return new ContentResult
+		// 	{
+		// 		Content = jsonString,
+		// 		ContentType = "application/json",
+		// 		StatusCode = 200
+		// 	};
+		// }
     }
 }
