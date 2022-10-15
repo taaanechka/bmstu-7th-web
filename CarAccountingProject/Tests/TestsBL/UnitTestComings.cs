@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -98,13 +99,13 @@ namespace TestsBL
         }
 
         [Fact]
-        public void TestAddComing()
+        public async Task TestAddComingAsync()
         {
             BL.Car car = new BL.Car("Id11", 1, 1, 5, 1);
 
             // RepositoriesFactory
             Mock<BL.IComingsRepository> mockComingsRep = new Mock<BL.IComingsRepository>();
-            mockComingsRep.Setup(rep => rep.AddComing(It.IsAny<BL.Coming>(), It.IsAny<BL.Car>())).Verifiable();
+            mockComingsRep.Setup(rep => rep.AddComingAsync(It.IsAny<BL.Coming>(), It.IsAny<BL.Car>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateComingsRepository() == mockComingsRep.Object);
@@ -116,16 +117,16 @@ namespace TestsBL
             DateTime myDate1 = DateTime.ParseExact("2022-04-10", "yyyy-MM-dd",
                                         System.Globalization.CultureInfo.InvariantCulture);
 
-            facade.AddComing(new BL.Coming(1, 1, myDate1), car);
+            await facade.AddComingAsync(new BL.Coming(1, 1, myDate1), car);
             mockComingsRep.VerifyAll();
         }
 
         [Fact]
-        public void TestDeleteComing()
+        public async Task TestDeleteComingAsync()
         {
             // RepositoriesFactory
             Mock<BL.IComingsRepository> mockComingsRep = new Mock<BL.IComingsRepository>();
-            mockComingsRep.Setup(rep => rep.DeleteComing(It.IsAny<int>())).Verifiable();
+            mockComingsRep.Setup(rep => rep.DeleteComingAsync(It.IsAny<int>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateComingsRepository() == mockComingsRep.Object);
@@ -134,7 +135,7 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.DeleteComing(1);
+            await facade.DeleteComingAsync(1);
             mockComingsRep.VerifyAll();
         }
     }

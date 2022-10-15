@@ -84,12 +84,12 @@ namespace API.Controllers
 		[Authorize(Roles = "ADMIN")]
 		[Produces("application/json")]
 		[HttpPost]
-		public IActionResult AddUser([FromBody] API.UserToAdd newUser)
+		public async Task<IActionResult> AddUserAsync([FromBody] API.UserToAdd newUser)
 		{
 			try
 			{
 				var user = UserToAddConverter.APIToBL(newUser);
-				_facade.AddUser(user);
+				await _facade.AddUserAsync(user);
 
 				return Ok("Successful add");
 			}
@@ -101,7 +101,7 @@ namespace API.Controllers
 
 		[Authorize]
 		[HttpPatch("{id}")]
-		public IActionResult UpdateUser(int id, [FromBody] API.UserToUpdate newUser)
+		public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] API.UserToUpdate newUser)
 		{
 			try
 			{
@@ -120,7 +120,7 @@ namespace API.Controllers
 				}
 
 				var user = UserToUpdateConverter.APIToBL(newUser);
-				_facade.UpdateUser(id, user);
+				await _facade.UpdateUserAsync(id, user);
 
 				return Ok("Successful update");
 			}
@@ -133,11 +133,11 @@ namespace API.Controllers
 		// [Authorize(Roles = "ADMIN")]
 		// [Produces("application/json")]
 		// [HttpPatch("{id}/Block")]
-		// public IActionResult BlockUserById([FromRoute] int id)
+		// public IActionResult BlockUserAsync([FromRoute] int id)
 		// {
 		// 	try
 		// 	{
-		// 		_facade.BlockUser(id);
+		// 		_facade.BlockUserAsync(id);
 
 		// 		return Ok("Successful block");
 		// 	}

@@ -11,8 +11,8 @@ namespace BL
         List<User> GetUsersByUserType(int type);
         User GetUserByLogin(string login);
         User GetUserById(int id);
-        void AddUser(User user);
-        void UpdateUser(int id, User newUser);
-        void BlockUser(int id);
+        Task AddUserAsync(User user);
+        Task UpdateUserAsync(int id, User newUser);
+        Task BlockUserAsync(int id);
     }
 }

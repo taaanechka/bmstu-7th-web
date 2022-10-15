@@ -103,7 +103,7 @@ namespace DB
             }
         }
 
-        public void AddDeparture(BL.Departure departure, BL.LinkOwnerCarDeparture link)
+        public async Task AddDepartureAsync(BL.Departure departure, BL.LinkOwnerCarDeparture link)
         {
             // Validation
             try
@@ -142,10 +142,10 @@ namespace DB
 
             BL.LinkOwnerCarDeparture newLink = new BL.LinkOwnerCarDeparture(link.Id, link.OwnerId, link.CarId, departureDB.Id);
             LinksOwnerCarDepartureRepository linkRep = new LinksOwnerCarDepartureRepository(db);
-            linkRep.AddLinkOwnerCarDeparture(newLink);
+            await linkRep.AddLinkOwnerCarDepartureAsync(newLink);
         }
 
-        public void DeleteDeparture(int id)
+        public async Task DeleteDepartureAsync(int id)
         {
             Departure Departure = db.Departures.Find(id);
 

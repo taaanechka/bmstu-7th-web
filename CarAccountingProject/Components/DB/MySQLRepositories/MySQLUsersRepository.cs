@@ -118,7 +118,7 @@ namespace DB
             }  
         }
 
-        public void AddUser(BL.User user)
+        public async Task AddUserAsync(BL.User user)
         {
             // Validation
             try
@@ -155,7 +155,7 @@ namespace DB
             }
         }
 
-        public void UpdateUser(int id, BL.User newUser)
+        public async Task UpdateUserAsync(int id, BL.User newUser)
         {
             User user = db.Users.Find(id);
 
@@ -197,7 +197,7 @@ namespace DB
             }
         }
 
-        public void BlockUser(int id)
+        public async Task BlockUserAsync(int id)
         {
             User user = db.Users.Find(id);
 

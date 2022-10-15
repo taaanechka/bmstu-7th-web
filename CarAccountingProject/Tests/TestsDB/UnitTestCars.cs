@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ public class UnitTestCars: IDisposable
     }
 
     [Fact]
-    public void TestAddCarCorrect()
+    public async Task TestAddCarAsyncCorrect()
     {
         var Car = new BL.Car("Number4", 5, 3, 4, 4);
 
@@ -77,7 +78,7 @@ public class UnitTestCars: IDisposable
         Assert.Equal(3, dbContextMock.Object.Cars.Count());
 
         // Act
-        Rep.AddCar(Car);
+        await Rep.AddCarAsync(Car);
 
         // Assert: final
         CarsDbSetMock.Verify(m => m.Add(It.IsAny<DB.Car>()), Times.Once());
@@ -87,21 +88,21 @@ public class UnitTestCars: IDisposable
     }
 
     [Fact]
-    public void TestAddCarUncorrect()
+    public async Task TestAddCarAsyncUncorrect()
     {
         var Car = new BL.Car("Number4", -5, 3, 4, 4);
 
         // Assert
-        Assert.Throws<DB.CarsValidatorFailException>(()=> Rep.AddCar(Car));
+        await Assert.ThrowsAsync<DB.CarsValidatorFailException>(()=> Rep.AddCarAsync(Car));
     }
 
     [Fact]
-    public void TestUpdateCarCorrect()
+    public async Task TestUpdateCarAsyncCorrect()
     {
         BL.Car CarUpd = new BL.Car("Number3", 5, 3, 4, 4);
 
         // Act
-        Rep.UpdateCar("Number3", CarUpd);
+        await Rep.UpdateCarAsync("Number3", CarUpd);
 
         var CarNew = Rep.GetCarById("Number3");
 
@@ -111,19 +112,19 @@ public class UnitTestCars: IDisposable
     }
 
     [Fact]
-    public void TestUpdateCarUncorrect()
+    public async Task TestUpdateCarAsyncUncorrect()
     {
         BL.Car CarUpd = new BL.Car("Number3", 5, -3, 4, 4);
 
         // Assert
-        Assert.Throws<DB.CarsValidatorFailException>(()=> Rep.UpdateCar("Number3", CarUpd));
+        await Assert.ThrowsAsync<DB.CarsValidatorFailException>(()=> Rep.UpdateCarAsync("Number3", CarUpd));
     }
 
     [Fact]
-    public void TestDeleteCarCorrect()
+    public async Task TestDeleteCarAsyncCorrect()
     {
         // Act
-        Rep.DeleteCar("Number3");
+        await Rep.DeleteCarAsync("Number3");
 
         CarsDbSetMock.Verify(m => m.Remove(It.IsAny<DB.Car>()), Times.Once());
         dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
@@ -132,9 +133,9 @@ public class UnitTestCars: IDisposable
     }
 
     [Fact]
-    public void TestDeleteCarUncorrect()
+    public async Task TestDeleteCarAsyncUncorrect()
     {
         // Assert
-        Assert.Throws<DB.CarNotFoundException>(()=> Rep.DeleteCar("Number5"));
+        await Assert.ThrowsAsync<DB.CarNotFoundException>(()=> Rep.DeleteCarAsync("Number5"));
     }
 }

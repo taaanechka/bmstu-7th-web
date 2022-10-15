@@ -124,7 +124,7 @@ namespace API.Controllers
         //addDeparture
         [Authorize(Roles = "EMPLOYEE")]
 		[HttpPost]
-		public IActionResult AddDeparture([FromBody] API.LinkOwnerCarDeparture link)
+		public async Task<IActionResult> AddDepartureAsync([FromBody] API.LinkOwnerCarDeparture link)
 		{
 			try
 			{
@@ -142,7 +142,7 @@ namespace API.Controllers
 				var departure = new Departure{UserId = userId};
 				var departureBL = DepartureConverter.APIToBL(departure);
                 var linkBL = LinkOwnerCarDepartureConverter.APIToBL(link);
-				_facade.AddDeparture(departureBL, linkBL);
+				await _facade.AddDepartureAsync(departureBL, linkBL);
 
 				return Ok("Successful add");
 			}

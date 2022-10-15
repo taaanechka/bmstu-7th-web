@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -93,13 +94,13 @@ namespace TestsBL
         }
 
         // [Fact]
-        // public void TestAddCar()
+        // public async Task TestAddCarAsync()
         // {
         //     BL.Car car = new BL.Car("Id11", 1, 1, 5, 1);
 
         //     // RepositoriesFactory
         //     Mock<BL.ICarsRepository> mockCarsRep = new Mock<BL.ICarsRepository>();
-        //     mockCarsRep.Setup(rep => rep.AddCar(It.IsAny<BL.Car>())).Verifiable();
+        //     mockCarsRep.Setup(rep => rep.AddCarAsync(It.IsAny<BL.Car>())).Verifiable();
 
         //     BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
         //                                                 f.CreateCarsRepository() == mockCarsRep.Object);
@@ -108,19 +109,19 @@ namespace TestsBL
         //     BL.Facade facade = new BL.Facade(mockRepFactory);
 
         //     // Test
-        //     facade.AddCar(car);
+        //     await facade.AddCarAsync(car);
         //     mockCarsRep.VerifyAll();
         // }
 
         [Fact]
-        public void TestUpdateCar()
+        public async Task TestUpdateCarAsync()
         {
             BL.Car car = new BL.Car("Id11", 1, 1, 5, 1);
 
             // RepositoriesFactory
             Mock<BL.ICarsRepository> mockCarsRep = new Mock<BL.ICarsRepository>();
             mockCarsRep.Setup(rep => rep.GetCarById(It.IsAny<string>())).Returns(car);
-            mockCarsRep.Setup(rep => rep.UpdateCar(It.IsAny<string>(), It.IsAny<BL.Car>())).Verifiable();
+            mockCarsRep.Setup(rep => rep.UpdateCarAsync(It.IsAny<string>(), It.IsAny<BL.Car>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateCarsRepository() == mockCarsRep.Object);
@@ -129,16 +130,16 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.UpdateCar("Id11", car);
+            await facade.UpdateCarAsync("Id11", car);
             mockCarsRep.VerifyAll();
         }
 
         // [Fact]
-        // public void TestDeleteCar()
+        // public async Task TestDeleteCarAsync()
         // {
         //     // RepositoriesFactory
         //     Mock<BL.ICarsRepository> mockCarsRep = new Mock<BL.ICarsRepository>();
-        //     mockCarsRep.Setup(rep => rep.DeleteCar(It.IsAny<string>())).Verifiable();
+        //     mockCarsRep.Setup(rep => rep.DeleteCarAsync(It.IsAny<string>())).Verifiable();
 
         //     BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
         //                                                 f.CreateCarsRepository() == mockCarsRep.Object);
@@ -147,7 +148,7 @@ namespace TestsBL
         //     BL.Facade facade = new BL.Facade(mockRepFactory);
 
         //     // Test
-        //     facade.DeleteCar("Id11");
+        //     await facade.DeleteCarAsync("Id11");
         //     mockCarsRep.VerifyAll();
         // }
     }

@@ -108,7 +108,7 @@ namespace API.Controllers
 		[HttpPost]
 		// public IActionResult AddComing([FromBody] API.Coming newComing, [FromBody] API.Car carC)
 		// public IActionResult AddComing([FromBody] API.ComingCar newComingCar)
-		public IActionResult AddComing([FromBody] API.Car car)
+		public async Task<IActionResult> AddComingAsync([FromBody] API.Car car)
 		{
 			try
 			{
@@ -130,7 +130,7 @@ namespace API.Controllers
 				// Console.WriteLine("ComingBL\n");
                 var carBL = CarConverter.APIToBL(car);
 				// Console.WriteLine("CarBL\n");
-				_facade.AddComing(comingBL, carBL);
+				await _facade.AddComingAsync(comingBL, carBL);
 				Console.WriteLine("Add\n");
 
 				return Ok("Successful add");

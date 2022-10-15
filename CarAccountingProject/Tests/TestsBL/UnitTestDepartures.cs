@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -98,7 +99,7 @@ namespace TestsBL
         }
 
         [Fact]
-        public void TestAddDeparture()
+        public async Task TestAddDepartureAsync()
         {
             BL.LinkOwnerCarDeparture LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(1, 1, "Id11", 1);
 
@@ -108,7 +109,7 @@ namespace TestsBL
 
             // RepositoriesFactory
             Mock<BL.IDeparturesRepository> mockDeparturesRep = new Mock<BL.IDeparturesRepository>();
-            mockDeparturesRep.Setup(rep => rep.AddDeparture(It.IsAny<BL.Departure>(), It.IsAny<BL.LinkOwnerCarDeparture>())).Verifiable();
+            mockDeparturesRep.Setup(rep => rep.AddDepartureAsync(It.IsAny<BL.Departure>(), It.IsAny<BL.LinkOwnerCarDeparture>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateDeparturesRepository() == mockDeparturesRep.Object);
@@ -117,16 +118,16 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.AddDeparture(departure, LinkOwnerCarDeparture);
+            await facade.AddDepartureAsync(departure, LinkOwnerCarDeparture);
             mockDeparturesRep.VerifyAll();
         }
 
         [Fact]
-        public void TestDeleteDeparture()
+        public async Task TestDeleteDepartureAsync()
         {
             // RepositoriesFactory
             Mock<BL.IDeparturesRepository> mockDeparturesRep = new Mock<BL.IDeparturesRepository>();
-            mockDeparturesRep.Setup(rep => rep.DeleteDeparture(It.IsAny<int>())).Verifiable();
+            mockDeparturesRep.Setup(rep => rep.DeleteDepartureAsync(It.IsAny<int>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateDeparturesRepository() == mockDeparturesRep.Object);
@@ -135,7 +136,7 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.DeleteDeparture(1);
+            await facade.DeleteDepartureAsync(1);
             mockDeparturesRep.VerifyAll();
         }
     }

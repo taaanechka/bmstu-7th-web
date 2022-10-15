@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,7 @@ public class UnitTestComings: IDisposable
     }
 
     // [Fact]
-    // public void TestAddComingCorrect()
+    // public async Task TestAddComingAsyncCorrect()
     // {   
     //     BL.Car car = new BL.Car("Id11", 1, 1, 5, 1);
 
@@ -88,7 +89,7 @@ public class UnitTestComings: IDisposable
     //     Assert.Equal(3, dbContextMock.Object.Comings.Count());
 
     //     // Act
-    //     Rep.AddComing(Coming, car);
+    //     await Rep.AddComingAsync(Coming, car);
 
     //     // Assert: final
     //     ComingsDbSetMock.Verify(m => m.Add(It.IsAny<DB.Coming>()), Times.Once());
@@ -98,7 +99,7 @@ public class UnitTestComings: IDisposable
     // }
 
     [Fact]
-    public void TestAddComingUncorrect()
+    public async Task TestAddComingAsyncUncorrect()
     {
         BL.Car car = new BL.Car("Id11", 1, 1, 5, 1);
 
@@ -108,14 +109,14 @@ public class UnitTestComings: IDisposable
         var Coming = new BL.Coming(4, -3, Date2);
 
         // Assert
-        Assert.Throws<DB.ComingsValidatorFailException>(()=> Rep.AddComing(Coming, car));
+        await Assert.ThrowsAsync<DB.ComingsValidatorFailException>(()=> Rep.AddComingAsync(Coming, car));
     }
 
     [Fact]
-    public void TestDeleteComingCorrect()
+    public async Task TestDeleteComingAsyncCorrect()
     {
         // Act
-        Rep.DeleteComing(3);
+        await Rep.DeleteComingAsync(3);
 
         ComingsDbSetMock.Verify(m => m.Remove(It.IsAny<DB.Coming>()), Times.Once());
         dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
@@ -125,9 +126,9 @@ public class UnitTestComings: IDisposable
     }
 
     [Fact]
-    public void TestDeleteComingUncorrect()
+    public async Task TestDeleteComingAsyncUncorrect()
     {
         // Assert
-        Assert.Throws<DB.ComingNotFoundException>(()=> Rep.DeleteComing(5));
+        await Assert.ThrowsAsync<DB.ComingNotFoundException>(()=> Rep.DeleteComingAsync(5));
     }
 }

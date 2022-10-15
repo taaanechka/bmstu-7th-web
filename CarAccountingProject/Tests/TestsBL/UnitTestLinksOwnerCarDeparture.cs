@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -30,13 +31,13 @@ namespace TestsBL
         }
 
         [Fact]
-        public void TestAddLinkOwnerCarDeparture()
+        public async Task TestAddLinkOwnerCarDepartureAsync()
         {
             BL.LinkOwnerCarDeparture LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(1, 1, "Id11", 1);
 
             // RepositoriesFactory
             Mock<BL.ILinksOwnerCarDepartureRepository> mockLinksOwnerCarDepartureRep = new Mock<BL.ILinksOwnerCarDepartureRepository>();
-            mockLinksOwnerCarDepartureRep.Setup(rep => rep.AddLinkOwnerCarDeparture(It.IsAny<BL.LinkOwnerCarDeparture>())).Verifiable();
+            mockLinksOwnerCarDepartureRep.Setup(rep => rep.AddLinkOwnerCarDepartureAsync(It.IsAny<BL.LinkOwnerCarDeparture>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateLinksOwnerCarDepartureRepository() == mockLinksOwnerCarDepartureRep.Object);
@@ -45,16 +46,16 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.AddLinkOwnerCarDeparture(LinkOwnerCarDeparture);
+            await facade.AddLinkOwnerCarDepartureAsync(LinkOwnerCarDeparture);
             mockLinksOwnerCarDepartureRep.VerifyAll();
         }
 
         [Fact]
-        public void TestDeleteLinkOwnerCarDeparture()
+        public async Task TestDeleteLinkOwnerCarDepartureAsync()
         {
             // RepositoriesFactory
             Mock<BL.ILinksOwnerCarDepartureRepository> mockLinksOwnerCarDepartureRep = new Mock<BL.ILinksOwnerCarDepartureRepository>();
-            mockLinksOwnerCarDepartureRep.Setup(rep => rep.DeleteLinkOwnerCarDeparture(It.IsAny<int>())).Verifiable();
+            mockLinksOwnerCarDepartureRep.Setup(rep => rep.DeleteLinkOwnerCarDepartureAsync(It.IsAny<int>())).Verifiable();
 
             BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                         f.CreateLinksOwnerCarDepartureRepository() == mockLinksOwnerCarDepartureRep.Object);
@@ -63,7 +64,7 @@ namespace TestsBL
             BL.Facade facade = new BL.Facade(mockRepFactory);
 
             // Test
-            facade.DeleteLinkOwnerCarDeparture(1);
+            await facade.DeleteLinkOwnerCarDepartureAsync(1);
             mockLinksOwnerCarDepartureRep.VerifyAll();
         }
     }

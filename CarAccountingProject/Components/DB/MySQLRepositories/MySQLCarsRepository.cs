@@ -135,7 +135,7 @@ namespace DB
             }
         }
 
-        public void AddCar(BL.Car car)
+        public async Task AddCarAsync(BL.Car car)
         {
             // Validation
             try
@@ -163,7 +163,7 @@ namespace DB
             db.SaveChanges();          
         }
 
-        public void UpdateCar(string id, BL.Car newCar)
+        public async Task UpdateCarAsync(string id, BL.Car newCar)
         {
             Car car = db.Cars.Find(id);
 
@@ -189,7 +189,7 @@ namespace DB
             db.SaveChanges();
         }
 
-        public void DeleteCar(string id)
+        public async Task DeleteCarAsync(string id)
         {
             Car car = db.Cars.Find(id);
 

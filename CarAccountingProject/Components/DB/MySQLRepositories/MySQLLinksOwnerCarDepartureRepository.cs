@@ -214,7 +214,7 @@ namespace DB
             }
         }
 
-        public void AddLinkOwnerCarDeparture(BL.LinkOwnerCarDeparture LinkOwnerCarDeparture)
+        public async Task AddLinkOwnerCarDepartureAsync(BL.LinkOwnerCarDeparture LinkOwnerCarDeparture)
         {
             // Validation
             try
@@ -244,7 +244,7 @@ namespace DB
             db.SaveChanges();
         }
 
-        public void DeleteLinkOwnerCarDeparture(int id)
+        public async Task DeleteLinkOwnerCarDepartureAsync(int id)
         {
             LinkOwnerCarDeparture LinkOwnerCarDeparture = db.LinksOwnerCarDeparture.Find(id);
 

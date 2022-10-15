@@ -102,7 +102,7 @@ namespace DB
             }
         }
 
-        public void AddComing(BL.Coming coming, BL.Car car)
+        public async Task AddComingAsync(BL.Coming coming, BL.Car car)
         {
             // Validation
             try
@@ -144,10 +144,10 @@ namespace DB
 
             BL.Car newCar = new BL.Car(car.Id, car.ModelId, car.EquipmentId, car.ColorId, comingDB.Id);
             MySQLCarsRepository carRep = new MySQLCarsRepository(db);
-            carRep.AddCar(newCar);
+            await carRep.AddCarAsync(newCar);
         }
 
-        public void DeleteComing(int id)
+        public async Task DeleteComingAsync(int id)
         {
             Coming coming = db.Comings.Find(id);
 

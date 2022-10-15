@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ public class UnitTestUsers: IDisposable
     }
 
     [Fact]
-    public void TestAddUserCorrect()
+    public async Task TestAddUserAsyncCorrect()
     {
         var user = new BL.User(4, "Name4", "Surname4", "Login4", "Password4", (BL.Permissions) 1);
 
@@ -77,7 +78,7 @@ public class UnitTestUsers: IDisposable
         Assert.Equal(3, dbContextMock.Object.Users.Count());
 
         // Act
-        Rep.AddUser(user);
+        await Rep.AddUserAsync(user);
 
         // Assert: final
         UsersDbSetMock.Verify(m => m.Add(It.IsAny<DB.User>()), Times.Once());
@@ -87,21 +88,21 @@ public class UnitTestUsers: IDisposable
     }
 
     [Fact]
-    public void TestAddUserUncorrect()
+    public async Task TestAddUserAsyncUncorrect()
     {
         var user = new BL.User(4, "Name4", "Surname4", "Login4", "Password4", (BL.Permissions) 4);
 
         // Assert
-        Assert.Throws<DB.UsersValidatorFailException>(()=> Rep.AddUser(user));
+        await Assert.ThrowsAsync<DB.UsersValidatorFailException>(()=> Rep.AddUserAsync(user));
     }
 
     [Fact]
-    public void TestUpdateUserCorrect()
+    public async Task TestUpdateUserAsyncCorrect()
     {
         BL.User userUpd = new BL.User(3, "SomeName", "Surname3", "NewLogin", "Password3", (BL.Permissions) 1);
 
         // Act
-        Rep.UpdateUser(3, userUpd);
+        await Rep.UpdateUserAsync(3, userUpd);
 
         var userNew = Rep.GetUserById(3);
 
@@ -114,19 +115,19 @@ public class UnitTestUsers: IDisposable
     }
 
     // [Fact]
-    // public void TestUpdateUserUncorrect()
+    // public async Task TestUpdateUserAsyncUncorrect()
     // {
     //     BL.User userUpd = new BL.User(3, "SomeName", "Surname3", "NewLogin", "Password3", (BL.Permissions) 4);
 
     //     // Assert
-    //     Assert.Throws<DB.UsersValidatorFailException>(()=> Rep.UpdateUser(3, userUpd));
+    //     await Assert.ThrowsAsync<DB.UsersValidatorFailException>(()=> Rep.UpdateUserAsync(3, userUpd));
     // }
 
     // [Fact]
-    // public void TestDeleteUserCorrect()
+    // public async Task TestDeleteUserAsyncCorrect()
     // {
     //     // Act
-    //     Rep.BlockUser(3);
+    //     await Rep.BlockUserAsync(3);
 
     //     UsersDbSetMock.Verify(m => m.Remove(It.IsAny<DB.User>()), Times.Once());
     //     dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
@@ -137,9 +138,9 @@ public class UnitTestUsers: IDisposable
     // }
 
     [Fact]
-    public void TestDeleteUserUncorrect()
+    public async Task TestDeleteUserAsyncUncorrect()
     {
         // Assert
-        Assert.Throws<DB.UserNotFoundException>(()=> Rep.BlockUser(5));
+        await Assert.ThrowsAsync<DB.UserNotFoundException>(()=> Rep.BlockUserAsync(5));
     }
 }

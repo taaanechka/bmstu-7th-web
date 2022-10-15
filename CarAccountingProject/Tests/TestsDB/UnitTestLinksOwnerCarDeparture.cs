@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ public class UnitTestLinksOwnerCarDeparture: IDisposable
     }
 
     [Fact]
-    public void TestAddLinkOwnerCarDepartureCorrect()
+    public async Task TestAddLinkOwnerCarDepartureAsyncCorrect()
     {
         var LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(4, 4, "Number4", 4);
 
@@ -77,7 +78,7 @@ public class UnitTestLinksOwnerCarDeparture: IDisposable
         Assert.Equal(3, dbContextMock.Object.LinksOwnerCarDeparture.Count());
 
         // Act
-        Rep.AddLinkOwnerCarDeparture(LinkOwnerCarDeparture);
+        await Rep.AddLinkOwnerCarDepartureAsync(LinkOwnerCarDeparture);
 
         // Assert: final
         LinksOwnerCarDepartureDbSetMock.Verify(m => m.Add(It.IsAny<DB.LinkOwnerCarDeparture>()), Times.Once());
@@ -87,19 +88,19 @@ public class UnitTestLinksOwnerCarDeparture: IDisposable
     }
 
     [Fact]
-    public void TestAddLinkOwnerCarDepartureUncorrect()
+    public async Task TestAddLinkOwnerCarDepartureAsyncUncorrect()
     {
         var LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(4, -4, "Number4", 4);
 
         // Assert
-        Assert.Throws<DB.LinksOwnerCarDepartureValidatorFailException>(()=> Rep.AddLinkOwnerCarDeparture(LinkOwnerCarDeparture));
+        await Assert.ThrowsAsync<DB.LinksOwnerCarDepartureValidatorFailException>(()=> Rep.AddLinkOwnerCarDepartureAsync(LinkOwnerCarDeparture));
     }
 
     [Fact]
-    public void TestDeleteLinkOwnerCarDepartureCorrect()
+    public async Task TestDeleteLinkOwnerCarDepartureAsyncCorrect()
     {
         // Act
-        Rep.DeleteLinkOwnerCarDeparture(3);
+        await Rep.DeleteLinkOwnerCarDepartureAsync(3);
 
         LinksOwnerCarDepartureDbSetMock.Verify(m => m.Remove(It.IsAny<DB.LinkOwnerCarDeparture>()), Times.Once());
         dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
@@ -108,9 +109,9 @@ public class UnitTestLinksOwnerCarDeparture: IDisposable
     }
 
     [Fact]
-    public void TestDeleteLinkOwnerCarDepartureUncorrect()
+    public async Task TestDeleteLinkOwnerCarDepartureAsyncUncorrect()
     {
         // Assert
-        Assert.Throws<DB.LinkOwnerCarDepartureNotFoundException>(()=> Rep.DeleteLinkOwnerCarDeparture(5));
+        await Assert.ThrowsAsync<DB.LinkOwnerCarDepartureNotFoundException>(()=> Rep.DeleteLinkOwnerCarDepartureAsync(5));
     }
 }

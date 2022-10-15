@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -126,11 +127,11 @@ public class UnitTestUsers
     }
 
     [Fact]
-    public void TestAddUser()
+    public async Task TestAddUserAsync()
     {
         // RepositoriesFactory
         Mock<BL.IUsersRepository> mockUsersRep = new Mock<BL.IUsersRepository>();
-        mockUsersRep.Setup(rep => rep.AddUser(It.IsAny<BL.User>())).Verifiable();
+        mockUsersRep.Setup(rep => rep.AddUserAsync(It.IsAny<BL.User>())).Verifiable();
 
         BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                     f.CreateUsersRepository() == mockUsersRep.Object);
@@ -139,19 +140,19 @@ public class UnitTestUsers
         BL.Facade facade = new BL.Facade(mockRepFactory);
 
         // Test
-        facade.AddUser(new BL.User(1, "Name1", "Surname1", "Login1", "Password1", (BL.Permissions) 3));
+        await facade.AddUserAsync(new BL.User(1, "Name1", "Surname1", "Login1", "Password1", (BL.Permissions) 3));
         mockUsersRep.VerifyAll();
     }
 
     [Fact]
-    public void TestUpdateUser()
+    public async Task TestUpdateUserAsync()
     {
         BL.User user = new BL.User(1, "Name1", "Surname1", "Login1", "Password1", (BL.Permissions) 2);
 
         // RepositoriesFactory
         Mock<BL.IUsersRepository> mockUsersRep = new Mock<BL.IUsersRepository>();
         mockUsersRep.Setup(rep => rep.GetUserById(It.IsAny<int>())).Returns(user);
-        mockUsersRep.Setup(rep => rep.UpdateUser(It.IsAny<int>(), It.IsAny<BL.User>())).Verifiable();
+        mockUsersRep.Setup(rep => rep.UpdateUserAsync(It.IsAny<int>(), It.IsAny<BL.User>())).Verifiable();
 
         BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                     f.CreateUsersRepository() == mockUsersRep.Object);
@@ -160,16 +161,16 @@ public class UnitTestUsers
         BL.Facade facade = new BL.Facade(mockRepFactory);
 
         // Test
-        facade.UpdateUser(1, user);
+        await facade.UpdateUserAsync(1, user);
         mockUsersRep.VerifyAll();
     }
 
     [Fact]
-    public void TestBlockUser()
+    public async Task TestBlockUserAsync()
     {
         // RepositoriesFactory
         Mock<BL.IUsersRepository> mockUsersRep = new Mock<BL.IUsersRepository>();
-        mockUsersRep.Setup(rep => rep.BlockUser(It.IsAny<int>())).Verifiable();
+        mockUsersRep.Setup(rep => rep.BlockUserAsync(It.IsAny<int>())).Verifiable();
 
         BL.IRepositoriesFactory mockRepFactory = Mock.Of<BL.IRepositoriesFactory>(f => 
                                                     f.CreateUsersRepository() == mockUsersRep.Object);
@@ -178,7 +179,7 @@ public class UnitTestUsers
         BL.Facade facade = new BL.Facade(mockRepFactory);
 
         // Test
-        facade.BlockUser(1);
+        await facade.BlockUserAsync(1);
         mockUsersRep.VerifyAll();
     }    
 }

@@ -273,7 +273,7 @@ namespace BL
             }
         }
 
-        public int AddUser(User user)
+        public async Task<int> AddUserAsync(User user)
         {
             IUsersRepository userRep = RepositoriesFactory.CreateUsersRepository();
             if (userRep == null)
@@ -284,7 +284,7 @@ namespace BL
             try
             {
                 UsersValidator.ValidateUser(user);
-                userRep.AddUser(user);
+                await userRep.AddUserAsync(user);
             
                 return 0;
             }
@@ -294,7 +294,7 @@ namespace BL
             }
         }
 
-        public int UpdateUser(int id, User newUser)
+        public async Task<int> UpdateUserAsync(int id, User newUser)
         {
             IUsersRepository userRep = RepositoriesFactory.CreateUsersRepository();
             if (userRep == null)
@@ -310,7 +310,7 @@ namespace BL
 
                 Console.WriteLine("Validated UserBL");
 
-                userRep.UpdateUser(id, newUser);
+                await userRep.UpdateUserAsync(id, newUser);
 
                 Console.WriteLine("Updated UserDB");
             
@@ -322,7 +322,7 @@ namespace BL
             }
         }
 
-        public int BlockUser(int id)
+        public async Task<int> BlockUserAsync(int id)
         {
             IUsersRepository userRep = RepositoriesFactory.CreateUsersRepository();
             if (userRep == null)
@@ -332,7 +332,7 @@ namespace BL
 
             try
             {
-                userRep.BlockUser(id);
+                await userRep.BlockUserAsync(id);
             
                 return 0;
             }
@@ -499,7 +499,7 @@ namespace BL
             }
         }
 
-        public int AddComing(Coming com, Car car)
+        public async Task<int> AddComingAsync(Coming com, Car car)
         {
             IComingsRepository comRep = RepositoriesFactory.CreateComingsRepository();
             if (comRep == null)
@@ -511,7 +511,7 @@ namespace BL
             {
                 CarsValidator.ValidateCar(car);
                 ComingsValidator.ValidateComing(com);
-                comRep.AddComing(com, car);
+                await comRep.AddComingAsync(com, car);
             
                return 0;
             }
@@ -532,7 +532,7 @@ namespace BL
             }
         }
 
-        public int DeleteComing(int id)
+        public async Task<int> DeleteComingAsync(int id)
         {
             IComingsRepository comRep = RepositoriesFactory.CreateComingsRepository();
             if (comRep == null)
@@ -542,7 +542,7 @@ namespace BL
 
             try
             {
-                comRep.DeleteComing(id);
+                await comRep.DeleteComingAsync(id);
             
                return 0;
             }
@@ -710,7 +710,7 @@ namespace BL
             }
         }
 
-        public int AddDeparture(Departure dep, LinkOwnerCarDeparture link)
+        public async Task<int> AddDepartureAsync(Departure dep, LinkOwnerCarDeparture link)
         {
             IDeparturesRepository depRep = RepositoriesFactory.CreateDeparturesRepository();
             if (depRep == null)
@@ -721,7 +721,7 @@ namespace BL
             try
             {
                 DeparturesValidator.ValidateDeparture(dep);
-                depRep.AddDeparture(dep, link);
+                await depRep.AddDepartureAsync(dep, link);
 
                 return 0;
             }
@@ -731,7 +731,7 @@ namespace BL
             }
         }
 
-        public int DeleteDeparture(int id)
+        public async Task<int> DeleteDepartureAsync(int id)
         {
             IDeparturesRepository depRep = RepositoriesFactory.CreateDeparturesRepository();
             if (depRep == null)
@@ -741,7 +741,7 @@ namespace BL
 
             try
             {
-                depRep.DeleteDeparture(id);
+                await depRep.DeleteDepartureAsync(id);
 
                 return 0;
             }
@@ -979,7 +979,7 @@ namespace BL
         //     }
         // }
 
-        public int UpdateCar(string id, Car newCar)
+        public async Task<int> UpdateCarAsync(string id, Car newCar)
         {
             ICarsRepository carRep = RepositoriesFactory.CreateCarsRepository();
             if (carRep == null)
@@ -992,7 +992,7 @@ namespace BL
                 var car = carRep.GetCarById(id);
                 var carTmp = new Car(car.Id, car.ModelId, newCar.EquipmentId, newCar.ColorId, car.ComingId);
                 CarsValidator.ValidateCar(carTmp);
-                carRep.UpdateCar(id, carTmp);
+                await carRep.UpdateCarAsync(id, carTmp);
 
                 return 0;
             }
@@ -1488,7 +1488,7 @@ namespace BL
             }
         }
 
-        public int AddLinkOwnerCarDeparture(LinkOwnerCarDeparture oc)
+        public async Task<int> AddLinkOwnerCarDepartureAsync(LinkOwnerCarDeparture oc)
         {
             ILinksOwnerCarDepartureRepository LinksOwnerCarDepartureRep = RepositoriesFactory.CreateLinksOwnerCarDepartureRepository();
             if (LinksOwnerCarDepartureRep == null)
@@ -1499,7 +1499,7 @@ namespace BL
             try
             {
                 LinksOwnerCarDepartureValidator.ValidateLinkOwnerCarDeparture(oc);
-                LinksOwnerCarDepartureRep.AddLinkOwnerCarDeparture(oc);
+                await LinksOwnerCarDepartureRep.AddLinkOwnerCarDepartureAsync(oc);
 
                 return 0;
             }
@@ -1509,7 +1509,7 @@ namespace BL
             }
         }
 
-        public int DeleteLinkOwnerCarDeparture(int id)
+        public async Task<int> DeleteLinkOwnerCarDepartureAsync(int id)
         {
             ILinksOwnerCarDepartureRepository LinksOwnerCarDepartureRep = RepositoriesFactory.CreateLinksOwnerCarDepartureRepository();
             if (LinksOwnerCarDepartureRep == null)
@@ -1519,7 +1519,7 @@ namespace BL
 
             try
             {
-                LinksOwnerCarDepartureRep.DeleteLinkOwnerCarDeparture(id);
+                await LinksOwnerCarDepartureRep.DeleteLinkOwnerCarDepartureAsync(id);
 
                 return 0;
             }

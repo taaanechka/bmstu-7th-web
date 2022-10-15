@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,7 @@ public class UnitTestDepartures: IDisposable
     }
 
     // [Fact]
-    // public void TestAddDepartureCorrect()
+    // public async Task TestAddDepartureAsyncCorrect()
     // {   
     //     BL.LinkOwnerCarDeparture LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(1, 1, "Id11", 1);
 
@@ -88,7 +89,7 @@ public class UnitTestDepartures: IDisposable
     //     Assert.Equal(3, dbContextMock.Object.Departures.Count());
 
     //     // Act
-    //     Rep.AddDeparture(Departure, LinkOwnerCarDeparture);
+    //     await Rep.AddDepartureAsync(Departure, LinkOwnerCarDeparture);
 
     //     // Assert: final
     //     DeparturesDbSetMock.Verify(m => m.Add(It.IsAny<DB.Departure>()), Times.Once());
@@ -98,7 +99,7 @@ public class UnitTestDepartures: IDisposable
     // }
 
     [Fact]
-    public void TestAddDepartureUncorrect()
+    public async Task TestAddDepartureAsyncUncorrect()
     {
         BL.LinkOwnerCarDeparture LinkOwnerCarDeparture = new BL.LinkOwnerCarDeparture(1, 1, "Id11", 1);
 
@@ -108,14 +109,14 @@ public class UnitTestDepartures: IDisposable
         var Departure = new BL.Departure(4, -3, Date2);
 
         // Assert
-        Assert.Throws<DB.DeparturesValidatorFailException>(()=> Rep.AddDeparture(Departure, LinkOwnerCarDeparture));
+        await Assert.ThrowsAsync<DB.DeparturesValidatorFailException>(()=> Rep.AddDepartureAsync(Departure, LinkOwnerCarDeparture));
     }
 
     [Fact]
-    public void TestDeleteDepartureCorrect()
+    public async Task TestDeleteDepartureAsyncCorrect()
     {
         // Act
-        Rep.DeleteDeparture(3);
+        await Rep.DeleteDepartureAsync(3);
 
         DeparturesDbSetMock.Verify(m => m.Remove(It.IsAny<DB.Departure>()), Times.Once());
         dbContextMock.Verify(m => m.SaveChanges(), Times.Once());
@@ -125,9 +126,9 @@ public class UnitTestDepartures: IDisposable
     }
 
     [Fact]
-    public void TestDeleteDepartureUncorrect()
+    public async Task TestDeleteDepartureAsyncUncorrect()
     {
         // Assert
-        Assert.Throws<DB.DepartureNotFoundException>(()=> Rep.DeleteDeparture(5));
+        await Assert.ThrowsAsync<DB.DepartureNotFoundException>(()=> Rep.DeleteDepartureAsync(5));
     }
 }

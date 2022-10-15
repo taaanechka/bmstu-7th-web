@@ -12,8 +12,8 @@ namespace BL
         Car GetCarByComingId(int comingId);
         Car GetCarById(string id);
         int GetComingIdByCarId(string id);
-        void AddCar(Car car);
-        void UpdateCar(string id, Car newCar);
-        void DeleteCar(string id);
+        Task AddCarAsync(Car car);
+        Task UpdateCarAsync(string id, Car newCar);
+        Task DeleteCarAsync(string id);
     }
 }

@@ -14,7 +14,7 @@ namespace BL
         Car GetCarIfNotInLinksOwnerCarDeparture(string id);
         string GetCarIdByDepartureId(int depId);
         int GetDepartureIdByCarId(string carId);
-        void AddLinkOwnerCarDeparture(LinkOwnerCarDeparture ocd);
-        void DeleteLinkOwnerCarDeparture(int id);
+        Task AddLinkOwnerCarDepartureAsync(LinkOwnerCarDeparture ocd);
+        Task DeleteLinkOwnerCarDepartureAsync(int id);
     }
 }
