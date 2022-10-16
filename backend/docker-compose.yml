@@ -63,7 +63,7 @@ services:
     restart: always
     # restart: unless-stopped
 
-  car-accounting:
+  car-accounting: &car-accounting-base
     # container_name: web-api-app
     # image: mcr.microsoft.com/dotnet/sdk:6.0
     build:
@@ -90,6 +90,18 @@ services:
     deploy:
       mode: replicated
       replicas: 3
+
+  car-accounting-testing:
+    <<: *car-accounting-base
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  car-accounting-mirror:
+    <<: *car-accounting-base
+    deploy:
+      mode: replicated
+      replicas: 1
 
 networks:
   api-gateaway:
