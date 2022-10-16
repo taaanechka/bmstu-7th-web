@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,12 +18,12 @@ namespace TechnologicalUI
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            InitialMenu();
+            await InitialMenu();
         }
 
-        static public void InitialMenu()
+        static public async Task InitialMenu()
         {
             int choice = -1;
 
@@ -47,7 +48,7 @@ namespace TechnologicalUI
                         {
                             var authorization = new Authorization();
                             // var authorization = new MySQLAuthorization();
-                            authorization.LogIn(login, password);
+                            await authorization.LogIn(login, password);
                         }
                         
                         break;

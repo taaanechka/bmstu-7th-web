@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,14 +21,13 @@ namespace TechnologicalUI
 
         public MySQLAuthorization()
         {
-            string path = Directory.GetCurrentDirectory(); // Components/UI/TechnologicalUI
             _config = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetParent(path).ToString()) // Components/UI
+                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
                     .Build();
         }
 
-        public void LogIn(string login, string password)
+        public async Task LogIn(string login, string password)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace TechnologicalUI
                 BL.Facade  _facade = new BL.Facade(new MySQLRepositoriesFactory(_context));
 
                 BL.User user = _facade.LogIn(login, password);
-                OpenConnection(Connection.GetConnectionString(_config, Connection.DBMS.MySQL, Permissions.ADMIN), _context, user);
+                await OpenConnection(Connection.GetConnectionString(_config, Connection.DBMS.MySQL, Permissions.ADMIN), _context, user);
             }
             catch (Exception exc)
             {
@@ -50,7 +50,7 @@ namespace TechnologicalUI
             }
         }
 
-        public void OpenConnection(string conn, DB.MySQLApplicationContext context, BL.User user)
+        public async Task OpenConnection(string conn, DB.MySQLApplicationContext context, BL.User user)
         {
             var builder = new HostBuilder()
                 .ConfigureServices((hostContext, services) =>
@@ -72,7 +72,7 @@ namespace TechnologicalUI
                 {
                     BL.Facade  _facade = new BL.Facade(new MySQLRepositoriesFactory(context));
                     var StartUp = new StartUp(_facade, user);
-                    StartUp.Run();
+                    await StartUp.Run();
                 }
                 catch (Exception)
                 {

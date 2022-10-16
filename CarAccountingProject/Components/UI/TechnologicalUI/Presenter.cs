@@ -1,4 +1,6 @@
 using System;
+using System.Threading.Tasks;
+
 using BL;
 
 using TechnologicalUI.Exceptions;
@@ -99,34 +101,34 @@ namespace TechnologicalUI
             return Facade.GetUserById(id);
         }
 
-        public int AddUser(BL.User user)
+        public async Task<int> AddUserAsync(BL.User user)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.AddUser(user);
+            return await Facade.AddUserAsync(user);
         }
 
-        public int UpdateUser(int id, BL.User newUser)
+        public async Task<int> UpdateUserAsync(int id, BL.User newUser)
         {
             if (AccessPermissions == Permissions.UNAUTHORIZED) 
             {
                 throw new UnauthorizedPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.UpdateUser(id, newUser);
+            return await Facade.UpdateUserAsync(id, newUser);
         }
 
-        public int BlockUser(int id)
+        public async Task<int> BlockUserAsync(int id)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.BlockUser(id);
+            return await Facade.BlockUserAsync(id);
         }
 
         // !Comings
@@ -182,24 +184,24 @@ namespace TechnologicalUI
             return Facade.GetComingById(id);
         }
 
-        public int AddComing(BL.Coming com, BL.Car car)
+        public async Task<int> AddComingAsync(BL.Coming com, BL.Car car)
         {
             if (AccessPermissions != Permissions.EMPLOYEE)
             {
                 throw new EmployeePermissionsException("Access permissions are missing.");
             }
 
-            return Facade.AddComing(com, car);
+            return await Facade.AddComingAsync(com, car);
         }
 
-        public int DeleteComing(int id)
+        public async Task<int> DeleteComingAsync(int id)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.DeleteComing(id);
+            return await Facade.DeleteComingAsync(id);
         }
 
 
@@ -254,24 +256,24 @@ namespace TechnologicalUI
             return Facade.GetDepartureById(id);
         }
 
-        public int AddDeparture(BL.Departure dep, BL.LinkOwnerCarDeparture link)
+        public async Task<int> AddDepartureAsync(BL.Departure dep, BL.LinkOwnerCarDeparture link)
         {
             if (AccessPermissions != Permissions.EMPLOYEE)
             {
                 throw new EmployeePermissionsException("Access permissions are missing.");
             }
 
-            return Facade.AddDeparture(dep, link);
+            return await Facade.AddDepartureAsync(dep, link);
         }
 
-        public int DeleteDeparture(int id)
+        public async Task<int> DeleteDepartureAsync(int id)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.DeleteDeparture(id);
+            return await Facade.DeleteDepartureAsync(id);
         }
         
 
@@ -356,14 +358,14 @@ namespace TechnologicalUI
         //     return Facade.AddCar(car);
         // }
 
-        public int UpdateCar(string id, BL.Car newCar)
+        public async Task<int> UpdateCarAsync(string id, BL.Car newCar)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.UpdateCar(id, newCar);
+            return await Facade.UpdateCarAsync(id, newCar);
         }
 
         // public int DeleteCar(string id)
@@ -548,24 +550,24 @@ namespace TechnologicalUI
             return Facade.GetDepartureIdByCarId(carId);
         }
 
-        public int AddLinkOwnerCarDeparture(BL.LinkOwnerCarDeparture oc)
+        public async Task<int> AddLinkOwnerCarDepartureAsync(BL.LinkOwnerCarDeparture oc)
         {
             if (AccessPermissions != Permissions.EMPLOYEE)
             {
                 throw new EmployeePermissionsException("Access permissions are missing.");
             }
 
-            return Facade.AddLinkOwnerCarDeparture(oc);
+            return await Facade.AddLinkOwnerCarDepartureAsync(oc);
         }
 
-        public int DeleteLinkOwnerCarDeparture(int id)
+        public async Task<int> DeleteLinkOwnerCarDepartureAsync(int id)
         {
             if (AccessPermissions != Permissions.ADMIN)
             {
                 throw new AdminPermissionsException("Access permissions are missing.");
             }
 
-            return Facade.DeleteLinkOwnerCarDeparture(id);
+            return await Facade.DeleteLinkOwnerCarDepartureAsync(id);
         }
 
         // !Models

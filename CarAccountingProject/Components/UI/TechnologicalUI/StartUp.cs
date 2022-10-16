@@ -1,4 +1,5 @@
-// using DB;
+using System.Threading.Tasks;
+
 using BL;
 
 #nullable disable
@@ -19,18 +20,18 @@ namespace TechnologicalUI
             _user = user;
         }
 
-        public void Run()
+        public async Task Run()
         {
             switch ((int) AccessPermissions)
             {
                 case 1:
-                    EmployeeFunctionality();
+                    await EmployeeFunctionality();
                     break;
                 case 2:
                     AnalystFunctionality();
                     break;
                 case 3:
-                    AdminFunctionality();
+                    await AdminFunctionality();
                     break;
                 default:
                     Console.WriteLine("Выход из приложения выполнен\n");
@@ -38,7 +39,7 @@ namespace TechnologicalUI
             }            
         }
 
-        void EmployeeFunctionality()
+        async Task EmployeeFunctionality()
         {
             int choice = -1;
 
@@ -109,7 +110,7 @@ namespace TechnologicalUI
                             BL.Coming coming = new BL.Coming(0, _user.Id);
                             BL.Car car = new BL.Car(carId, modelId, equipmentId, colorId, 0);
 
-                            AddComing(coming, car);
+                            await AddComingAsync(coming, car);
                         }
                         catch (Exception)
                         {
@@ -153,7 +154,7 @@ namespace TechnologicalUI
                             BL.Departure departure = new BL.Departure(0, _user.Id);
                             BL.LinkOwnerCarDeparture link = new BL.LinkOwnerCarDeparture(0, ownerId, carId, 0);
 
-                            AddDeparture(departure, link);
+                            await AddDepartureAsync(departure, link);
                         }
                         catch (Exception)
                         {
@@ -474,7 +475,7 @@ namespace TechnologicalUI
             }
         }
 
-        void AdminFunctionality()
+        async Task AdminFunctionality()
         {
             int choice = -1;
 
@@ -493,13 +494,13 @@ namespace TechnologicalUI
                 switch (choice)
                 {
                     case 1: // Пользователи
-                        AdminUsersMenu();
+                        await AdminUsersMenu();
                         break;
                     case 2: // Приходы / уходы
-                        AdminComingsDeparturesMenu();
+                        await AdminComingsDeparturesMenu();
                         break;
                     case 3: // Автомобили и информация о них
-                        AdminCarsMenu();
+                        await AdminCarsMenu();
                         break;
                     case 4: // Владельцы автомобилей
                         AdminCarOwnersMenu();
@@ -515,7 +516,7 @@ namespace TechnologicalUI
             }
         }
 
-        void AdminUsersMenu()
+        async Task AdminUsersMenu()
         {
             int choice = -1;
 
@@ -590,7 +591,7 @@ namespace TechnologicalUI
                             int type = Convert.ToInt32(Console.ReadLine());
 
                             BL.User user = new BL.User(0, name, surname, login, password, (BL.Permissions) type);
-                            AddUser(user);
+                            await AddUserAsync(user);
                         }
                         catch (Exception)
                         {
@@ -612,7 +613,7 @@ namespace TechnologicalUI
                             string password = Console.ReadLine();
 
                             BL.User updUser = new BL.User(id, name, surname, login, password, (Permissions) 1);
-                            UpdateUser(id, updUser);
+                            await UpdateUserAsync(id, updUser);
                         }
                         catch (Exception)
                         {
@@ -624,7 +625,7 @@ namespace TechnologicalUI
                         {
                             Console.WriteLine("Введите id пользователя:");
                             int id = Convert.ToInt32(Console.ReadLine());
-                            BlockUser(id);
+                            await BlockUserAsync(id);
                         }
                         catch (Exception)
                         {
@@ -638,7 +639,7 @@ namespace TechnologicalUI
             }
         }
 
-        void AdminComingsDeparturesMenu()
+        async Task AdminComingsDeparturesMenu()
         {
             int choice = -1;
 
@@ -692,7 +693,7 @@ namespace TechnologicalUI
                         {
                             Console.WriteLine("Введите id прихода:");
                             int id = Convert.ToInt32(Console.ReadLine());
-                            DeleteComing(id);
+                            await DeleteComingAsync(id);
                         }
                         catch (Exception)
                         {
@@ -730,7 +731,7 @@ namespace TechnologicalUI
                         {
                             Console.WriteLine("Введите id ухода:");
                             int id = Convert.ToInt32(Console.ReadLine());
-                            DeleteDeparture(id);
+                            await DeleteDepartureAsync(id);
                         }
                         catch (Exception)
                         {
@@ -744,7 +745,7 @@ namespace TechnologicalUI
             }
         }
 
-        void AdminCarsMenu()
+        async Task AdminCarsMenu()
         {
             int choice = -1;
 
@@ -821,7 +822,7 @@ namespace TechnologicalUI
 
                             BL.Car car = new BL.Car(carId, 1, equipmentId, colorId, 1);
 
-                            UpdateCar(carId, car);
+                            await UpdateCarAsync(carId, car);
                         }
                         catch (Exception)
                         {
@@ -1482,11 +1483,11 @@ namespace TechnologicalUI
             }
         }
 
-        void AddComing(BL.Coming coming, BL.Car car)
+        async Task AddComingAsync(BL.Coming coming, BL.Car car)
         {
             try
             {
-                _presenter.AddComing(coming, car);
+                await _presenter.AddComingAsync(coming, car);
             }
             catch (Exception)
             {
@@ -1494,11 +1495,11 @@ namespace TechnologicalUI
             }
         }
 
-        void DeleteComing(int id)
+        async Task DeleteComingAsync(int id)
         {
             try
             {
-                _presenter.DeleteComing(id);
+                await _presenter.DeleteComingAsync(id);
             }
             catch (Exception)
             {
@@ -1506,11 +1507,11 @@ namespace TechnologicalUI
             }
         }
 
-        void AddDeparture(BL.Departure departure, BL.LinkOwnerCarDeparture link)
+        async Task AddDepartureAsync(BL.Departure departure, BL.LinkOwnerCarDeparture link)
         {
             try
             {
-                _presenter.AddDeparture(departure, link);
+                await _presenter.AddDepartureAsync(departure, link);
             }
             catch (Exception)
             {
@@ -1518,11 +1519,11 @@ namespace TechnologicalUI
             }
         }
 
-        void DeleteDeparture(int id)
+        async Task DeleteDepartureAsync(int id)
         {
             try
             {
-                _presenter.DeleteDeparture(id);
+                await _presenter.DeleteDepartureAsync(id);
             }
             catch (Exception)
             {
@@ -1598,11 +1599,11 @@ namespace TechnologicalUI
             
         }
 
-        void AddUser(BL.User user)
+        async Task AddUserAsync(BL.User user)
         {
             try
             {
-                _presenter.AddUser(user);
+                await _presenter.AddUserAsync(user);
             }
             catch (Exception)
             {
@@ -1610,11 +1611,11 @@ namespace TechnologicalUI
             }
         }
 
-        void UpdateUser(int id, BL.User updUser)
+        async Task UpdateUserAsync(int id, BL.User updUser)
         {
             try
             {
-                _presenter.UpdateUser(id, updUser);
+                await _presenter.UpdateUserAsync(id, updUser);
             }
             catch (Exception)
             {
@@ -1622,11 +1623,11 @@ namespace TechnologicalUI
             }
         }
 
-        void BlockUser(int id)
+        async Task BlockUserAsync(int id)
         {
             try
             {
-                _presenter.BlockUser(id);
+                await _presenter.BlockUserAsync(id);
             }
             catch (Exception)
             {
@@ -1678,11 +1679,11 @@ namespace TechnologicalUI
             
         }
 
-        void UpdateCar(string id, BL.Car newCar)
+        async Task UpdateCarAsync(string id, BL.Car newCar)
         {
             try
             {
-                _presenter.UpdateCar(id, newCar);
+                await _presenter.UpdateCarAsync(id, newCar);
             }
             catch (Exception)
             {
