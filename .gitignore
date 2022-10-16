@@ -10,6 +10,7 @@
 
 # postgres
 */data
+*.txt
 
 # User-specific files
 *.rsuser

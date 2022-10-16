@@ -5,6 +5,7 @@ services:
     image: macbre/nginx-http3:1.23.1
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../docs/console_version/:/etc/nginx/console_version/
     #   - ../frontend/public/:/usr/share/nginx/html/
       - ../nginx/out/crypto/cert.pem:/etc/car_accounting.com/cert.pem
       - ../nginx/out/crypto/key.pem:/etc/car_accounting.com/key.pem
