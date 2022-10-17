@@ -98,11 +98,11 @@ services:
       mode: replicated
       replicas: 1
 
-  car-accounting-mirror:
-    <<: *car-accounting-base
-    deploy:
-      mode: replicated
-      replicas: 1
+  # car-accounting-mirror:
+  #   <<: *car-accounting-base
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
 
 networks:
   api-gateaway:

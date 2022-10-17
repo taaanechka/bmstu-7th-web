@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+// using Serilog;
+// using Serilog.Sinks.File;
+// using Serilog.Settings.Configuration;
+// using Serilog.Sinks;
+using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Logging.File;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +35,8 @@ namespace API
 
 		public IConfiguration Configuration { get; }
 
+		private readonly string swaggerBasePath = "api/v1";
+
 		// public Startup(IConfiguration configuration)
 		// {
 		// 	string path = Directory.GetCurrentDirectory(); // Components/UI/API
@@ -48,15 +56,15 @@ namespace API
 
 			services.AddCors(options =>
 			{
-			options.AddPolicy("mycors", builder =>
-			{
-			builder
-			.WithOrigins("http://localhost:3000") // путь к нашему SPA клиенту
-			.AllowCredentials()
-			.WithMethods("POST", "GET", "DELETE")
-			.AllowAnyHeader();
-			});
-
+				options.AddPolicy("mycors", builder =>
+				{
+					builder
+					.WithOrigins("*:3000")
+					// .WithOrigins("http://localhost:3000") // путь к нашему SPA клиенту
+					.AllowCredentials()
+					.WithMethods("POST", "GET", "PATCH")
+					.AllowAnyHeader();
+				});
 			});
 
 			// services.AddSession(options =>
@@ -79,14 +87,14 @@ namespace API
                     Description = "ASP.NET Core 6.0 Web API"
                 });
                 // To Enable authorization using Swagger (JWT)
-                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                swagger.AddSecurityDefinition("bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
+                    Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                    Description = "JWT Authorization header using the bearer scheme. \r\n\r\n Enter 'bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"bearer 12345abcdef\"",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -96,7 +104,7 @@ namespace API
                                 Reference = new OpenApiReference
                                 {
                                     Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
+                                    Id = "bearer"
                                 }
                             },
                             new string[] {}
@@ -157,10 +165,20 @@ namespace API
 			AddTransients(services);
 
 			services.AddSingleton<IConfiguration>(Configuration);
+
+			// var serilogLogger = new LoggerConfiguration()
+            //             .WriteTo.Console()
+            //             .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+            //             .CreateLogger();
+        	// services.AddLogging(x =>
+        	// {
+        	//     x.AddSerilog(logger: serilogLogger, dispose: true);
+        	// });
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
 			{
@@ -172,7 +190,9 @@ namespace API
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
-		
+
+			
+			loggerFactory.AddFile("Logs/mylog-{Date}.txt");
 
 			app.UseCors("mycors");
 
@@ -188,28 +208,40 @@ namespace API
 
 			app.UseMiddleware<JWTMiddleware>();
 
-			// Enable middleware to serve generated Swagger as a JSON endpoint.
-			app.UseSwagger();
+			// // Enable middleware to serve generated Swagger as a JSON endpoint.
+			// app.UseSwagger();
 
 			// Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
     		// app.UseSwaggerUI();
 
 			// app.UseSwagger(c => c.RouteTemplate = "api/v1");
 
-			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.)
+			app.UseSwagger(c =>
+            {
+                c.RouteTemplate = swaggerBasePath + "/swagger/{documentName}/swagger.json";
+            });
+
 			app.UseSwaggerUI(c =>
-			{
-				// http://localhost:5004/swagger/v1/swagger.json
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-				//c.RoutePrefix = "docs";
-			});
+            {
+                c.SwaggerEndpoint($"/{swaggerBasePath}/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = $"{swaggerBasePath}/swagger";
+            });
+
+			// // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.)
+			// app.UseSwaggerUI(c =>
+			// {
+			// 	// http://localhost:5004/swagger/v1/swagger.json
+			// 	// c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+			// 	c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+			// 	//c.RoutePrefix = "docs";
+			// });
 
 			// app.UseSwagger(c =>
 			// 	{
 			// 		c.RouteTemplate = "swagger/{documentName}/swagger.json";
 			// 		c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
 			// 		{
-			// 			swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://localhost:5004/api/v1/" } };
+			// 			swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://localhost/api/v1/" } };
 			// 		});
 			// 	});
 
