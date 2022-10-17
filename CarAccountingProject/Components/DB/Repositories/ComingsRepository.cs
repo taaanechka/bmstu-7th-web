@@ -170,7 +170,7 @@ namespace DB
             }
 
             db.Comings.Remove(coming);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

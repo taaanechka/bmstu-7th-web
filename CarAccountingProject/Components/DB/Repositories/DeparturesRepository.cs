@@ -156,7 +156,7 @@ namespace DB
             }
 
             db.Departures.Remove(Departure);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

@@ -160,7 +160,7 @@ namespace DB
             }
             
             db.Cars.Add(CarConverter.BLToDB(car));
-            db.SaveChanges();          
+            await db.SaveChangesAsync();          
         }
 
         public async Task UpdateCarAsync(string id, BL.Car newCar)
@@ -186,7 +186,7 @@ namespace DB
 
             car.EquipmentId = newCar.EquipmentId;
             car.ColorId = newCar.ColorId;
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteCarAsync(string id)
@@ -200,7 +200,7 @@ namespace DB
             }
 
             db.Cars.Remove(car);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

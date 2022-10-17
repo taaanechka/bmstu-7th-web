@@ -245,7 +245,7 @@ namespace DB
             }
 
             db.LinksOwnerCarDeparture.Add(LinkOwnerCarDepartureConverter.BLToDB(LinkOwnerCarDeparture));
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteLinkOwnerCarDepartureAsync(int id)
@@ -259,7 +259,7 @@ namespace DB
             }
 
             db.LinksOwnerCarDeparture.Remove(LinkOwnerCarDeparture);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

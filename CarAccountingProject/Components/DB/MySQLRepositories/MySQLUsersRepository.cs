@@ -151,7 +151,7 @@ namespace DB
             catch(UserNotFoundException)
             {
                 db.Users.Add(UserConverter.BLToDB(user));
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
 
@@ -193,7 +193,7 @@ namespace DB
                 user.Surname = newUser.Surname;
                 user.Login = newUser.Login;
                 user.Password = newUser.Password;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
 
@@ -208,7 +208,7 @@ namespace DB
             }
 
             user.UserType = (int) BL.Permissions.UNAUTHORIZED;
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }
