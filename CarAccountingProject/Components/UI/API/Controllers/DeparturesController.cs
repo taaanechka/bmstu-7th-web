@@ -2,11 +2,11 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-using BL;
 using API.Helpers;
 using API.DTO;
 
@@ -18,16 +18,20 @@ namespace API.Controllers
     public class DeparturesController: Controller
     {
         private BL.Facade _facade;
+		private ILogger _logger;
 
-        public DeparturesController(BL.Facade facade)
+        public DeparturesController(BL.Facade facade, ILogger<DeparturesController> logger)
         {
             _facade = facade;
+			_logger = logger;
         }
 
         [Authorize(Roles = "ADMIN, ANALYST")]
 		[HttpGet]
 		public IActionResult GetDepartures([FromQuery] Dates dates)
 		{
+			_logger.LogInformation("GetDepartures method in DeparturesController");
+
 			List<API.Departure> departuresAPI = new List<API.Departure>();
 
 			List<BL.Departure> departuresBL;
@@ -79,30 +83,13 @@ namespace API.Controllers
 			};
 		}
 
-		// public IActionResult Index()
-		// {
-        //     List<API.Departure> departuresAPI = new List<API.Departure>();
-
-		// 	var departuresBL = _facade.GetDepartures();
-        //     foreach (var departure in departuresBL)
-        //     {
-        //         departuresAPI.Add(DepartureConverter.BLToAPI(departure));
-        //     }
-            
-		// 	string jsonString = JsonSerializer.Serialize(departuresAPI, Options.JsonOptions());
-		// 	return new ContentResult
-		// 	{
-		// 		Content = jsonString,
-		// 		ContentType = "application/json",
-		// 		StatusCode = 200
-		// 	};
-		// }
-
         // [Authorize(Roles = "ADMIN")]
 		[Authorize]
 		[HttpGet("{id}")]
 		public IActionResult GetDepartureById([FromRoute] int id)
 		{
+			_logger.LogInformation("GetDepartureById method in DeparturesController");
+
 			try
 			{
 				var departure = DepartureConverter.BLToAPI(_facade.GetDepartureById(id));
@@ -126,6 +113,8 @@ namespace API.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddDepartureAsync([FromBody] API.LinkOwnerCarDeparture link)
 		{
+			_logger.LogInformation("AddDepartureAsync method in DeparturesController");
+
 			try
 			{
                 var userIdstring = this.HttpContext.User.Claims

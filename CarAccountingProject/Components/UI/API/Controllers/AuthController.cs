@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -23,13 +24,14 @@ namespace API.Controllers
     public class AuthController: Controller
     {
         private readonly IConfiguration _configuration;
-
         private BL.Facade _facade;
+        private ILogger _logger;
 
-        public AuthController(IConfiguration configuration, BL.Facade facade)
+        public AuthController(IConfiguration configuration, BL.Facade facade, ILogger<UsersController> logger)
         {
             _configuration = configuration;
             _facade = facade;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -37,6 +39,8 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult Auth([FromBody] UserToLogin user)
         {
+            _logger.LogInformation("Auth method in AuthController");
+
             try
             {
                 var userInfo = _facade.LogIn(user.Login, user.Password);

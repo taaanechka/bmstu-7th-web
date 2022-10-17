@@ -2,11 +2,11 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-using BL;
 using API.Helpers;
 using API.DTO;
 
@@ -18,10 +18,12 @@ namespace API.Controllers
     public class ComingsController: Controller
     {
         private BL.Facade _facade;
+		private ILogger _logger;
 
-        public ComingsController(BL.Facade facade)
+        public ComingsController(BL.Facade facade, ILogger<ComingsController> logger)
         {
             _facade = facade;
+			_logger = logger;
         }
 
         [Authorize(Roles = "ADMIN, ANALYST")]
@@ -29,6 +31,8 @@ namespace API.Controllers
 		// public IActionResult GetComings([FromUri] string date, [FromUri] string dateFrom, [FromUri] string dateTo)
 		public IActionResult GetComings([FromQuery] Dates dates)
 		{
+			_logger.LogInformation("GetComings method in ComingsController");
+
 			List<API.Coming> comingsAPI = new List<API.Coming>();
 
 			List<BL.Coming> comingsBL;
@@ -85,6 +89,8 @@ namespace API.Controllers
 		[HttpGet("{id}")]
 		public IActionResult GetComingById([FromRoute] int id)
 		{
+			_logger.LogInformation("GetComingById method in ComingsController");
+
 			try
 			{
 				var coming = ComingConverter.BLToAPI(_facade.GetComingById(id));
@@ -106,10 +112,10 @@ namespace API.Controllers
         //addComing
         [Authorize(Roles = "EMPLOYEE")]
 		[HttpPost]
-		// public IActionResult AddComing([FromBody] API.Coming newComing, [FromBody] API.Car carC)
-		// public IActionResult AddComing([FromBody] API.ComingCar newComingCar)
 		public async Task<IActionResult> AddComingAsync([FromBody] API.Car car)
 		{
+			_logger.LogInformation("AddComingAsync method in ComingsController");
+
 			try
 			{
 				var userIdstring = this.HttpContext.User.Claims

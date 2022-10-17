@@ -2,11 +2,11 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-using BL;
 using API.Helpers;
 using API.DTO;
 
@@ -18,17 +18,21 @@ namespace API.Controllers
     public class UsersController: Controller
     {
 		private BL.Facade _facade;
+		private ILogger _logger;
 
-        public UsersController(BL.Facade facade)
+        public UsersController(BL.Facade facade, ILogger<UsersController> logger)
         {
             _facade = facade;
+			_logger = logger;
         }
 
 		[Authorize(Roles = "ADMIN, ANALYST")]
 		[Produces("application/json")]
 		[HttpGet]
-		public IActionResult Index()
+		public IActionResult GetUsers()
 		{
+			_logger.LogInformation("GetUsers method in UsersController");
+
 			var account = HttpContext.User.Identity;
             if (account == null)
             {
@@ -63,6 +67,8 @@ namespace API.Controllers
 		[HttpGet("{id}")]
 		public IActionResult GetUserById([FromRoute] int id)
 		{
+			_logger.LogInformation("GetUserById method in UsersController");
+
 			try
 			{
 				var user = UserConverter.BLToAPI(_facade.GetUserById(id));
@@ -86,6 +92,8 @@ namespace API.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddUserAsync([FromBody] API.UserToAdd newUser)
 		{
+			_logger.LogInformation("AddUserAsync method in UsersController");
+
 			try
 			{
 				var user = UserToAddConverter.APIToBL(newUser);
@@ -103,6 +111,8 @@ namespace API.Controllers
 		[HttpPatch("{id}")]
 		public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] API.UserToUpdate newUser)
 		{
+			_logger.LogInformation("UpdateUserAsync method in UsersController");
+
 			try
 			{
 				var userIdstring = this.HttpContext.User.Claims
@@ -129,22 +139,5 @@ namespace API.Controllers
 				return NotFound($"User with id = {id} not found");
 			}
 		}
-
-		// [Authorize(Roles = "ADMIN")]
-		// [Produces("application/json")]
-		// [HttpPatch("{id}/Block")]
-		// public IActionResult BlockUserAsync([FromRoute] int id)
-		// {
-		// 	try
-		// 	{
-		// 		_facade.BlockUserAsync(id);
-
-		// 		return Ok("Successful block");
-		// 	}
-		// 	catch (Exception)
-		// 	{
-		// 		return NotFound($"User with id = {id} not found");
-		// 	}
-		// }
     }
 }
