@@ -6,6 +6,7 @@
 3. [Краткий перечень функциональных требований](#3)
 4. [Use-Case - диаграмма](#Use-Case)
 5. [ER-диаграмма сущностей](#ER)
+6. [Figma (+ moodboard)](#Figma)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -38,3 +39,7 @@
 ##  5. <a name='ER'></a> ER-диаграмма сущностей
 
 ![ER-диаграмма](./docs/img/ER-diagram-Ch.svg)
+
+
+## 6. <a name ='Figma'></a> Figma (+ moodboard)
+[Click](https://www.figma.com/file/6Ri6hVnzAvMThnfv020jQo/CarAccountingProject?node-id=0%3A1)
